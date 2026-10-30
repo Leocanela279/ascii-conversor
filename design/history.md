@@ -240,3 +240,18 @@
 - The [eyebrow] allowance is back (same tile-caption false positive).
 - Gate: build clean, lint 0 FAIL/0 WARN, inspect 0 FAIL (4 WARN — all
   defended). Crops verified at 1440 and 390.
+
+## 2026-10-30 — v1.12 the mark picks up its cursor (owner's pick)
+
+- Of the five explorations the owner chose cursor: a terminal block
+  cursor sits at the A's lower right and blinks (1.15s cycle, on 42% /
+  off 42%). Folded into make-logo.py as build(..., cursor=True) and
+  regenerated into public/logo.svg; favicon stays static.
+- Implementation note: CSS keyframes inside the SVG, not SMIL — SMIL
+  ignores prefers-reduced-motion and froze under headless virtual time;
+  CSS animation runs inside <img>-loaded SVG, honors the reduced-motion
+  media query (cursor rests visible), and advances under virtual time,
+  which let us verify it headlessly: two captures 0.6s apart show the
+  cursor hidden in one and lit in the other.
+- Gate: build clean, lint 0 FAIL/0 WARN; blink verified by phase diff
+  in the live hero.

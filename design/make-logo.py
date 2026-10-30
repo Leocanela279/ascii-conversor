@@ -82,7 +82,7 @@ def bars_svg(runs_per_row, area, rows, fill_ratio):
     return "".join(parts)
 
 
-def build(path, size, rows, pad_ratio, fill_ratio, radius, glow):
+def build(path, size, rows, pad_ratio, fill_ratio, radius, glow, cursor=False):
     cols = rows * 2  # letter grid finer horizontally: crisper diagonals
     runs = letter_runs(rows, cols)
     pad = size * pad_ratio
@@ -98,12 +98,33 @@ def build(path, size, rows, pad_ratio, fill_ratio, radius, glow):
         )
         glow_layer = f'<g filter="url(#glow)" opacity="0.5" fill="{PHOSPHOR}">{bars}</g>'
 
+    # terminal block cursor after the glyph's last row; CSS (not SMIL) so
+    # prefers-reduced-motion can still the blink even inside an <img>
+    style = ""
+    cursor_markup = ""
+    if cursor:
+        row_h = area[2] / rows
+        last = max(r for r, row in enumerate(runs) if row)
+        right = max(row[-1][1] for row in runs if row)
+        cx = area[0] + (right + 0.035) * area[2]
+        cy = area[1] + (last - 1.1) * row_h
+        style = (
+            "<style>.cur{animation:cur-blink 1.15s linear infinite}"
+            "@keyframes cur-blink{0%,42%{opacity:1}50%,92%{opacity:0}100%{opacity:1}}"
+            "@media (prefers-reduced-motion:reduce){.cur{animation:none}}</style>"
+        )
+        cursor_markup = (
+            f'<rect class="cur" x="{cx:.1f}" y="{cy:.1f}" '
+            f'width="{area[2] * 0.085:.1f}" height="{row_h * 2.1:.1f}" fill="{PHOSPHOR}"/>'
+        )
+
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}" role="img" '
-        f'aria-label="ascii conversor logo">{glow_defs}'
+        f'aria-label="ascii conversor logo">{style}{glow_defs}'
         f'<rect width="{size}" height="{size}" rx="{radius}" fill="{ARTBG}"/>'
         f"{glow_layer}"
         f'<g fill="{PHOSPHOR}">{bars}</g>'
+        f"{cursor_markup}"
         f"</svg>"
     )
     with open(path, "w") as f:
@@ -272,8 +293,9 @@ def build_explorations():
     explore_resolve(runs)
 
 
-# display mark: fine scanlines + a restrained phosphor glow (the CRT nod)
-build("public/logo.svg", size=512, rows=64, pad_ratio=0.13, fill_ratio=0.55, radius=72, glow=True)
+# display mark: fine scanlines + a restrained phosphor glow (the CRT nod),
+# with the blinking block cursor the owner picked from the explorations
+build("public/logo.svg", size=512, rows=64, pad_ratio=0.13, fill_ratio=0.55, radius=72, glow=True, cursor=True)
 # favicon: coarse bars, flat, must survive 16px
 build("public/favicon.svg", size=64, rows=22, pad_ratio=0.11, fill_ratio=0.72, radius=11, glow=False)
 build_explorations()
