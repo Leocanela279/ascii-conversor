@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #ffffff;
+  --color-surface: #f5f2f0;
+  --color-field: #ece7e3;
+  --color-ink: #2b2622;
+  --color-muted: #6a615d;
+  --color-faint: #5d544f;
+  --color-panel: #2b2622;
+  --color-panel-2: #3a332e;
+  --color-panel-hover: #453d36;
+  --color-on-panel: #efe9e6;
+  --color-block: #2b2622;
+  --color-artbg: #211d19;
+  --color-accent: #0f7d45;
+  --color-accent-strong: #0c6a3a;
+  --color-on-accent: #ffffff;
+  --color-on-muted: #ffffff;
+  --color-on-panel-muted: #a89e97;
+
+  --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-art: ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* taste-skill-ignore — monospace is the medium itself: ASCII art is set in it */
+
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Dark theme: near-black warm ground, elevation by lighter steps,
+   brighter lower-chroma accent with dark text on it, pairs re-checked. */
+:root[data-theme="dark"] {
+  --color-bg: #141210;
+  --color-surface: #1d1a16;
+  --color-field: #26211d;
+  --color-ink: #eae4e0;
+  --color-muted: #a89e97;
+  --color-faint: #8f857f;
+  --color-panel: #211d19;
+  --color-panel-2: #2e2823;
+  --color-panel-hover: #3a332f;
+  --color-on-panel: #f0eae7;
+  --color-block: #eae4e0;
+  --color-artbg: #100d0b;
+  --color-accent: #149b57;
+  --color-accent-strong: #1cb266;
+  --color-on-accent: #06130c;
+  --color-on-muted: #141210;
+  --color-on-panel-muted: #a89e97;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-body);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- motion layer ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+.reveal.is-in {
+  animation: rise 0.7s var(--ease-out) both;
+}
+
+@keyframes shutter-open {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes shutter-settle {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.shutter {
+  clip-path: inset(0 100% 0 0);
+}
+.shutter.is-in {
+  animation: shutter-open 1.1s var(--ease-out) both;
+}
+.shutter.is-in > .shutter-inner {
+  animation: shutter-settle 1.1s var(--ease-out) both;
+}
+
+/* Hover-only lift and marquee pause: never on touch, where hover sticks. */
+@media (hover: hover) and (pointer: fine) {
+  .lift-hover {
+    transition: transform 150ms var(--ease-out);
+  }
+  .group:hover .lift-hover {
+    transform: translateY(-6px);
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+/* CTA stream: an infinite drift of tiles passing behind the fixed card.
+   Linear timing is deliberate — any ease stutters at the loop seam.
+   Content is duplicated 2x so the -50% loop lands on identical tiles. */
+@keyframes marquee-drift {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent); /* taste-skill-ignore — alpha mask fading the stream edges, not a visible fill */
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent); /* taste-skill-ignore — alpha mask fading the stream edges, not a visible fill */
+}
+.marquee-track {
+  animation: marquee-drift 45s linear infinite;
+  will-change: transform;
+}
+
+/* Hero panel glyph field: dissolves toward the bottom so the nav stays clean. */
+.panel-texture {
+  mask-image: linear-gradient(180deg, black 50%, transparent 96%); /* taste-skill-ignore — alpha mask dissolving the glyph field, not a visible fill */
+  -webkit-mask-image: linear-gradient(180deg, black 50%, transparent 96%); /* taste-skill-ignore — alpha mask dissolving the glyph field, not a visible fill */
+}
+
+/* Drag-over: the surface leans in to receive the file. Interruptible —
+   a transition, not a keyframe, so quick drag in/out never restarts it. */
+.drop-scale {
+  transition: transform 160ms var(--ease-out);
+}
+[data-dragging="true"] .drop-scale {
+  transform: scale(1.015);
+}
+
+/* New source arrives: the render dissolves in through a 2px blur that
+   masks the grid swapping mid-flight. Keyed on source changes only. */
+@keyframes convert-in {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+.convert-in {
+  animation: convert-in 260ms var(--ease-out) both;
+}
+
+/* Theme flip: a coordinated 300ms settle of color only, applied via a
+   temporary class on <html> so first paint never transitions. */
+html.theme-transition,
+html.theme-transition body,
+html.theme-transition [data-ui],
+html.theme-transition [data-ui] * {
+  transition:
+    background-color 300ms ease,
+    color 300ms ease,
+    border-color 300ms ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .shutter {
+    opacity: 1;
+    clip-path: none;
+  }
+  .reveal.is-in,
+  .shutter.is-in,
+  .shutter.is-in > .shutter-inner,
+  .convert-in,
+  .marquee-track {
+    animation: none;
+  }
+  /* Stream stays reachable without motion: a static, scrollable row. */
+  .marquee {
+    overflow-x: auto;
+  }
+  /* Keep fades, drop movement: color and opacity transitions survive. */
+  *,
+  *::before,
+  *::after {
+    transition-property:
+      color, background-color, border-color, opacity, outline-color,
+      fill, stroke !important;
+  }
+}
+
+/* ---------- controls ---------- */
+
+input[type="range"] {
+  accent-color: var(--color-accent);
+}
+
+.ascii-canvas {
+  font-family: var(--font-art);
+}
