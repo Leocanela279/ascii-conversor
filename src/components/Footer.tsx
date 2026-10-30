@@ -1,3 +1,4 @@
+import { ArrowUp } from "lucide-react";
 import { useReveal } from "../lib/useReveal";
 
 const WORD = "ASCIICONVERSOR".split("");
@@ -31,9 +32,9 @@ export function Footer() {
         ))}
       </div>
 
-      <div className="mt-10 grid gap-8 text-[16px] md:grid-cols-4">
+      <div className="mt-10 grid gap-8 text-[16px] md:grid-cols-3">
         <nav aria-label="Footer" className="flex flex-col gap-2 font-semibold">
-          <a className="underline-offset-4 hover:underline" href="#how">How it works</a>
+          <a className="underline-offset-4 hover:underline" href="#features">Features</a>
           <a className="underline-offset-4 hover:underline" href="#demo">Try it</a>
           <a
             className="underline-offset-4 hover:underline"
@@ -44,10 +45,6 @@ export function Footer() {
             GitHub
           </a>
         </nav>
-        <div>
-          <p className="font-semibold">Private by design</p>
-          <p className="mt-1">Every conversion runs in your browser. No upload, no server.</p>
-        </div>
         <div>
           <p className="font-semibold">Sample photos</p>
           <p className="mt-1 text-[var(--color-faint)]">
@@ -75,9 +72,10 @@ export function Footer() {
         </span>
         <a
           href="#top"
-          className="inline-flex h-10 items-center rounded-lg bg-[var(--color-ink)] px-4 font-semibold text-[var(--color-bg)] transition-[opacity,transform] duration-150 ease-out hover:opacity-85 active:scale-[0.97]"
+          className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap font-semibold text-[var(--color-ink)] underline-offset-4 hover:underline"
         >
           Back to top
+          <ArrowUp size={14} strokeWidth={2} className="link-arrow" aria-hidden="true" />
         </a>
       </div>
     </footer>

@@ -1,6 +1,6 @@
 import { Toaster } from "sonner";
 import { Hero } from "./components/Hero";
-import { HowItWorks } from "./components/HowItWorks";
+import { Features } from "./components/Features";
 import { Converter } from "./components/Converter";
 import { Cta } from "./components/Cta";
 import { Footer } from "./components/Footer";
@@ -10,7 +10,7 @@ export default function App() {
     <>
       <Hero />
       <main>
-        <HowItWorks />
+        <Features />
         <Converter />
         <Cta />
       </main>

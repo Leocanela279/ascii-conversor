@@ -123,13 +123,33 @@ body {
   animation: shutter-settle 1.1s var(--ease-out) both;
 }
 
-/* Hover-only lift and marquee pause: never on touch, where hover sticks. */
+/* Hover-only lift, arrow nudge and marquee pause: never on touch. */
 @media (hover: hover) and (pointer: fine) {
   .lift-hover {
     transition: transform 150ms var(--ease-out);
   }
   .group:hover .lift-hover {
     transform: translateY(-6px);
+  }
+  .link-arrow {
+    transition: transform 150ms var(--ease-out);
+  }
+  a:hover .link-arrow {
+    transform: translateY(-2px);
+  }
+  /* The peeking mini-window rises when its card is hovered. */
+  .peek {
+    transition: transform 200ms var(--ease-out);
+  }
+  .group:hover .peek {
+    transform: translateY(-6px);
+  }
+  /* The hero window's live thumb nudges, as if someone is tuning. */
+  .peek-thumb {
+    transition: transform 200ms var(--ease-out);
+  }
+  .group:hover .peek-thumb {
+    transform: translateX(8px);
   }
   .marquee:hover .marquee-track {
     animation-play-state: paused;

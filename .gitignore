@@ -4,3 +4,4 @@ dist-ssr
 *.local
 .taste-skill
 .DS_Store
+.inbox/

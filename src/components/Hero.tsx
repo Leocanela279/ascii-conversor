@@ -140,8 +140,8 @@ export function Hero() {
         </Column>
       </div>
 
-      {/* phone sheet: two columns below the panel (clears panel + caption strip) */}
-      <div className="grid grid-cols-2 gap-2 px-4 pt-[calc(42svh+52px)] lg:hidden">
+      {/* phone sheet: two columns below the panel (clears panel + logo + strip) */}
+      <div className="grid grid-cols-2 gap-2 px-4 pt-[calc(42svh+116px)] lg:hidden">
         <Column offset="0px">
           <AsciiFrame src="/samples/vaults.jpg" caption="vaults → 56 cols" strip={0} />
           <PhotoFrame src="/samples/bridge.jpg" caption="source · bridge" strip={1} alt="White arched bridge over grey water" />
@@ -155,7 +155,7 @@ export function Hero() {
       </div>
 
       {/* the one text cell — same instance on every width */}
-      <div className="absolute inset-x-4 top-4 lg:inset-x-auto lg:left-[calc(33.3333%+10px)] lg:top-[28svh] lg:w-[calc(33.3333%-18px)]">
+      <div className="absolute inset-x-4 top-4 lg:inset-x-auto lg:left-[calc(33.3333%+10px)] lg:top-[26svh] lg:w-[calc(33.3333%-18px)]">
         <TextPanel />
       </div>
     </header>
@@ -172,7 +172,7 @@ function TextPanel() {
     <div>
       {/* square corners like every tile on the board; controls keep their
           rounding — surfaces square, controls rounded */}
-      <div className="relative flex min-h-[42svh] flex-col overflow-hidden bg-[var(--color-panel)] p-6 text-[var(--color-on-panel)] lg:h-[410px] lg:min-h-0">
+      <div className="relative flex min-h-[42svh] flex-col overflow-hidden bg-[var(--color-panel)] p-6 text-[var(--color-on-panel)] lg:h-[482px] lg:min-h-0">
         {/* the panel is made of the same stuff as the tiles around it:
             a faint phosphor render, dissolving toward the nav row */}
         <div
@@ -182,6 +182,13 @@ function TextPanel() {
           <AsciiCanvas grid={grid} fontSize={20} ariaLabel="" />
         </div>
         <div className="relative flex h-full flex-col">
+          <img
+            src="/logo.svg"
+            alt=""
+            width={56}
+            height={56}
+            className="mb-4 h-12 w-12 lg:h-14 lg:w-14"
+          />
           <h1 className="text-[clamp(2.5rem,3.4vw,4rem)] font-extrabold leading-[0.92] tracking-[-0.05em]">
             <span className="block">ascii</span>
             <span className="block">conversor</span>
@@ -196,7 +203,7 @@ function TextPanel() {
             Convert an image
           </a>
           <nav className="mt-auto flex items-center gap-5 pt-6 text-[15px] font-semibold">
-            <a className="underline-offset-4 hover:underline" href="#how">How it works</a>
+            <a className="underline-offset-4 hover:underline" href="#features">Features</a>
             <a className="underline-offset-4 hover:underline" href="#demo">Try it</a>
             <a
               className="underline-offset-4 hover:underline"

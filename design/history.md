@@ -137,3 +137,106 @@
 - Research notes: 2026 trend reports name mono/tech typography a live
   current; rebrand case studies say keep the color that makes you
   different — terminal green is ours.
+
+## 2026-10-30 — v1.9 the mark takes its place
+
+- The scanline-A logo now sits above the hero headline: 48px on phone,
+  56px on desktop, dark tile reading as an inset against the panel.
+- Panel grew 410 → 482px (lg) and shifted up 28 → 26svh to hold the mark
+  inside the first screen; phone sheet clearance bumped to match.
+- Catch from the screenshots: the theme toggle's new icon made the hero
+  nav wrap mid-phrase below sm — the toggle is now icon-only there
+  (label returns at sm and up).
+- Gate: build clean, lint 0 FAIL/0 WARN, inspect 0 FAIL both themes.
+
+## 2026-10-30 — v1.9a softer mark (user tweak)
+
+- Tile corner radius up: 24 → 72 on the 512 viewBox (≈14%, clearly rounded,
+  not squircle), favicon 8 → 11 to match. Regenerated via make-logo.py.
+
+## 2026-10-30 — v1.9b mark explorations (awaiting pick)
+
+- "Give the logo more life" — studied Emil Kowalski's own mark (a plain
+  gradient orb): the life comes from light and motion, not detail.
+- Five variants generated into design/logo-explorations/ (comparison sheet
+  at design/logo-explorations/index.html, live at /design/logo-explorations/
+  on the dev server):
+  beam (radial phosphor light falloff, static), dissolve (feet scatter into
+  cells, static), cursor (SMIL blinking block cursor), sweep (SMIL light
+  band clipped to the glyph, 3.8s loop), resolve (SMIL rows settle on load).
+- make-logo.py extended: letter_runs now yields (start, end, luminance).
+- Caveat: SMIL does not advance under headless --virtual-time-budget, so
+  animated variants were verified in code, not by screenshot — confirm in a
+  real browser before adopting. Recommendation: beam (static) or sweep
+  (animated); favicon stays flat regardless.
+
+## 2026-10-30 — v1.10 back-to-top is a link, not a button
+
+- Owner's call: the footer's dark pill was a button where a link belongs —
+  it also wrapped onto two lines at phone widths.
+- Now an inline link: "Back to top" + ArrowUp (lucide, 14px), underlined on
+  hover; the arrow rises 2px on hover via a .link-arrow utility gated to
+  hover-capable pointers, 150ms var(--ease-out), transform-only.
+- Deliberate exception: this is the page's ONE arrow glyph (skill copy
+  rule: at most one). Nav links and hero CTA stay words.
+- Follow-up: at 390px the phrase still broke ("top ↑" dropping under
+  "Back to") — the link now carries whitespace-nowrap + shrink-0, so the
+  credit wraps instead and the phrase + arrow always hold one line.
+- Gate: build clean, lint 0 FAIL/0 WARN, inspect 0 FAIL both themes
+  (3 WARN — all previously defended categories). Mobile wrap fix verified
+  on a real-scroll 390px capture.
+
+## 2026-10-30 — v1.11 peeking windows replace How-it-works
+
+- Adapted the animations.dev "community" card (owner supplied the HTML):
+  text up top, a miniature of the product's own UI peeking from the
+  bottom-right corner — mt-auto, overflow-hidden crop, top/left border
+  only, select-none, so it reads as picture. The badge detail ("7")
+  became our "0 uploads" badge.
+- Owner's call: the four-stage How-it-works band comes out; this section
+  takes its place right after the hero. HowItWorks.tsx deleted; hero and
+  footer nav now point to #features ("Features").
+- Layout per 2026 bento research: hierarchy through size, not three equal
+  boxes — one wide hero cell ("Every slider, live", md:col-span-2) over
+  two supporting cells ("Private by design", "Yours to keep"). Full-bleed
+  seamless grid, fields rotating bg/surface/field like the old band.
+- The hero window runs a REAL conversion (stairs, phosphor, 170 cols).
+  First attempt used 44 cols stretched to ~1200px — soft green blobs.
+  AsciiCanvas draws at natural size ×dpr then CSS-stretches, so cols now
+  make natural width ≈ window width: dpr-2 backing downscales, glyphs
+  stay crisp. Caption and slider value both say 170 cols.
+- Micro-delights (gated to hover-capable pointers, transform-only,
+  var(--ease-out)): the window rises 6px on card hover; on the hero card
+  the Resolution thumb nudges 8px right, as if someone is tuning.
+  Entrance: staggered reveal, 0/90/180ms.
+- Footer deduplication: its "Private by design" blurb moved up into the
+  cards, so the footer grid drops to 3 columns.
+- New defended finding: [eyebrow] @1440 — the detector reads a hero tile
+  caption ("building → 56 cols · color") as a kicker above "Every slider,
+  live". It's tile metadata; allowed via --allow eyebrow.
+- Gate: build clean, lint 0 FAIL/0 WARN, inspect 0 FAIL both themes
+  (4 WARN light / 3 dark — all previously defended categories). Crops
+  verified at 1440 light+dark and 390 mobile.
+
+## 2026-10-30 — v1.11a contain the band on desktop (user tweak)
+
+- Owner: mobile is perfect, desktop stretches too much. From md up the
+  grid now sits in the same contained column as the converter
+  (mx-auto max-w-[1100px], overflow-hidden rounded-lg, md:px-5 md:py-20).
+  Mobile keeps the full-bleed stack untouched.
+- Side effect: the defended [eyebrow] finding disappeared — the heading
+  no longer neighbours a hero tile caption. Allowance dropped.
+- Gate: build clean, lint 0 FAIL/0 WARN, inspect 0 FAIL (3 WARN — all
+  previously defended). Desktop crop verified.
+
+## 2026-10-30 — v1.11b true bento: separated, rounded cells (user tweak)
+
+- Owner wanted the cells apart and rounded. The seamless wrapper is gone:
+  real gaps (12px phone / 16px desktop), every card rounded-xl with
+  overflow-hidden so the peeking window clips against the rounded corner.
+  Mobile gains side margins (px-4) — cards no longer touch the edges.
+- Field rotation adjusted: hero was on --color-bg (page white) and would
+  have vanished against the white gaps — now field/surface/field.
+- The [eyebrow] allowance is back (same tile-caption false positive).
+- Gate: build clean, lint 0 FAIL/0 WARN, inspect 0 FAIL (4 WARN — all
+  defended). Crops verified at 1440 and 390.

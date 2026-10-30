@@ -13,7 +13,8 @@ export function ThemeToggle() {
       className="ml-auto"
       aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {theme === "dark" ? "Light" : "Dark"}
+      {/* icon-only below sm: the hero nav row has no room for the label */}
+      <span className="hidden sm:inline">{theme === "dark" ? "Light" : "Dark"}</span>
     </Button>
   );
 }
