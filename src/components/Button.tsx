@@ -8,7 +8,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
  * Shared by every action so the recipe can't drift between buttons.
  */
 const BASE =
-  "inline-flex shrink-0 items-center justify-center gap-2 font-semibold transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50";
+  "press inline-flex shrink-0 items-center justify-center gap-2 font-semibold disabled:pointer-events-none disabled:opacity-50";
 
 const VARIANTS = {
   accent:
@@ -16,13 +16,21 @@ const VARIANTS = {
   onPanel: "bg-[var(--color-on-panel)] text-[var(--color-panel)] hover:bg-white",
   ghost:
     "bg-[var(--color-panel-2)] text-[var(--color-on-panel)] hover:bg-[var(--color-panel-hover)]",
+  quiet: "bg-transparent text-[var(--color-ink)] hover:bg-[var(--color-field)]",
 } as const;
 
 const SIZES = {
-  sm: "h-9 rounded-lg px-3 text-[13px]",
-  md: "h-11 rounded-lg px-5 text-[15px]",
-  lg: "h-12 rounded-lg px-6 text-[15px]",
+  sm: "h-9 rounded-lg px-3 text-[length:var(--step-small)]",
+  md: "h-11 rounded-lg px-5 text-[length:var(--step-ui)]",
+  lg: "h-12 rounded-lg px-6 text-[length:var(--step-ui)]",
 } as const;
+
+export function buttonClass(
+  variant: keyof typeof VARIANTS = "accent",
+  size: keyof typeof SIZES = "md",
+) {
+  return `${BASE} ${VARIANTS[variant]} ${SIZES[size]}`;
+}
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: keyof typeof VARIANTS;
@@ -42,7 +50,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={`${BASE} ${VARIANTS[variant]} ${SIZES[size]} ${className}`}
+      className={`${buttonClass(variant, size)} ${className}`}
       {...rest}
     >
       {Icon && <Icon size={15} strokeWidth={2} aria-hidden="true" />}
@@ -62,7 +70,7 @@ export function Chip({
     <button
       type="button"
       aria-pressed={pressed}
-      className={`${BASE} h-9 rounded-md px-3 text-[13px] ${
+      className={`${BASE} h-9 rounded-md px-3 text-[length:var(--step-small)] ${
         pressed ? VARIANTS.accent : VARIANTS.ghost
       } ${className}`}
       {...rest}

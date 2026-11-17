@@ -23,8 +23,10 @@
   --font-art: ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* taste-skill-ignore — monospace is the medium itself: ASCII art is set in it */
 
   --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-ui: 0.9375rem;
   --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-title: clamp(1.5rem, 1.15rem + 1vw, 2rem);
   --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -76,16 +78,18 @@ body {
   outline-offset: 2px;
 }
 
-/* ---------- motion layer ---------- */
+/* ---------- motion layer ----------
+   Composite-only unless noted. Color uses `ease`; movement uses --ease-out.
+   Durations stay under 300ms except the one-shot entrances. */
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
@@ -93,94 +97,48 @@ body {
   opacity: 0;
 }
 .reveal.is-in {
-  animation: rise 0.7s var(--ease-out) both;
+  animation: rise 420ms var(--ease-out) both;
 }
 
-@keyframes shutter-open {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
+/* Hero entrance: one shot. Stagger is non-uniform and under 80ms. */
+.proof-enter > * {
+  animation: rise 420ms var(--ease-out) both;
 }
-@keyframes shutter-settle {
-  from {
-    transform: scale(1.12);
-  }
-  to {
-    transform: scale(1);
-  }
+.proof-enter > *:nth-child(1) {
+  animation-delay: 0ms;
 }
-
-.shutter {
-  clip-path: inset(0 100% 0 0);
+.proof-enter > *:nth-child(2) {
+  animation-delay: 40ms;
 }
-.shutter.is-in {
-  animation: shutter-open 1.1s var(--ease-out) both;
+.proof-enter > *:nth-child(3) {
+  animation-delay: 90ms;
 }
-.shutter.is-in > .shutter-inner {
-  animation: shutter-settle 1.1s var(--ease-out) both;
+.proof-enter > *:nth-child(4) {
+  animation-delay: 140ms;
 }
 
-/* Hover-only lift, arrow nudge and marquee pause: never on touch. */
+/* Press feedback. Color eases; the scale eases out so the press answers immediately. */
+.press {
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    transform 160ms var(--ease-out);
+}
+.press:active {
+  transform: scale(0.97);
+}
+
+.link {
+  text-underline-offset: 4px;
+  transition: color 150ms ease;
+}
 @media (hover: hover) and (pointer: fine) {
-  .lift-hover {
-    transition: transform 150ms var(--ease-out);
-  }
-  .group:hover .lift-hover {
-    transform: translateY(-6px);
-  }
-  .link-arrow {
-    transition: transform 150ms var(--ease-out);
-  }
-  a:hover .link-arrow {
-    transform: translateY(-2px);
-  }
-  /* The peeking mini-window rises when its card is hovered. */
-  .peek {
-    transition: transform 200ms var(--ease-out);
-  }
-  .group:hover .peek {
-    transform: translateY(-6px);
-  }
-  /* The hero window's live thumb nudges, as if someone is tuning. */
-  .peek-thumb {
-    transition: transform 200ms var(--ease-out);
-  }
-  .group:hover .peek-thumb {
-    transform: translateX(8px);
-  }
-  .marquee:hover .marquee-track {
-    animation-play-state: paused;
+  .link:hover {
+    text-decoration-line: underline;
   }
 }
 
-/* CTA stream: an infinite drift of tiles passing behind the fixed card.
-   Linear timing is deliberate — any ease stutters at the loop seam.
-   Content is duplicated 2x so the -50% loop lands on identical tiles. */
-@keyframes marquee-drift {
-  to {
-    transform: translateX(-50%);
-  }
-}
-.marquee {
-  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent); /* taste-skill-ignore — alpha mask fading the stream edges, not a visible fill */
-  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent); /* taste-skill-ignore — alpha mask fading the stream edges, not a visible fill */
-}
-.marquee-track {
-  animation: marquee-drift 45s linear infinite;
-  will-change: transform;
-}
-
-/* Hero panel glyph field: dissolves toward the bottom so the nav stays clean. */
-.panel-texture {
-  mask-image: linear-gradient(180deg, black 50%, transparent 96%); /* taste-skill-ignore — alpha mask dissolving the glyph field, not a visible fill */
-  -webkit-mask-image: linear-gradient(180deg, black 50%, transparent 96%); /* taste-skill-ignore — alpha mask dissolving the glyph field, not a visible fill */
-}
-
-/* Drag-over: the surface leans in to receive the file. Interruptible —
-   a transition, not a keyframe, so quick drag in/out never restarts it. */
+/* Drag-over leans the render surface. A transition, so a quick in/out retargets. */
 .drop-scale {
   transition: transform 160ms var(--ease-out);
 }
@@ -188,8 +146,7 @@ body {
   transform: scale(1.015);
 }
 
-/* New source arrives: the render dissolves in through a 2px blur that
-   masks the grid swapping mid-flight. Keyed on source changes only. */
+/* New source only. 2px blur bridges the grid swap; kept far under 20px. */
 @keyframes convert-in {
   from {
     opacity: 0;
@@ -204,8 +161,7 @@ body {
   animation: convert-in 260ms var(--ease-out) both;
 }
 
-/* Theme flip: a coordinated 300ms settle of color only, applied via a
-   temporary class on <html> so first paint never transitions. */
+/* Theme flip: color only, never on first paint. */
 html.theme-transition,
 html.theme-transition body,
 html.theme-transition [data-ui],
@@ -216,27 +172,39 @@ html.theme-transition [data-ui] * {
     border-color 300ms ease !important;
 }
 
+.switch {
+  transition: background-color 160ms ease;
+}
+.switch-knob {
+  transition: transform 160ms var(--ease-out);
+}
+
+.compare-clip {
+  clip-path: inset(0 42% 0 0);
+}
+.compare-hit:focus-visible {
+  outline: none;
+}
+.compare-hit:focus-visible .compare-grip {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .reveal,
-  .shutter {
+  .proof-enter > * {
     opacity: 1;
-    clip-path: none;
+    transform: none;
   }
   .reveal.is-in,
-  .shutter.is-in,
-  .shutter.is-in > .shutter-inner,
   .convert-in,
-  .marquee-track {
+  .proof-enter > * {
     animation: none;
   }
-  /* Stream stays reachable without motion: a static, scrollable row. */
-  .marquee {
-    overflow-x: auto;
-  }
-  /* Keep fades, drop movement: color and opacity transitions survive. */
+  /* Keep color fades. Drop movement. */
   *,
   *::before,
   *::after {
@@ -248,10 +216,52 @@ html.theme-transition [data-ui] * {
 
 /* ---------- controls ---------- */
 
-input[type="range"] {
-  accent-color: var(--color-accent);
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+}
+.range::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) var(--fill, 0%),
+    var(--color-panel-2) var(--fill, 0%)
+  );
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -7px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+.range::-moz-range-track {
+  height: 2px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) var(--fill, 0%),
+    var(--color-panel-2) var(--fill, 0%)
+  );
+}
+.range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-accent);
 }
 
 .ascii-canvas {
   font-family: var(--font-art);
 }
+
