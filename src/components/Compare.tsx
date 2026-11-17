@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import { CHARSETS } from "../../engine/charsets";
-import { useAsciiImage } from "../../lib/useAsciiImage";
-import { AsciiCanvas } from "../../components/AsciiCanvas";
+import { CHARSETS } from "../engine/charsets";
+import { useAsciiImage } from "../lib/useAsciiImage";
+import { AsciiCanvas } from "./AsciiCanvas";
 
 /**
  * Photograph underneath, ASCII clipped over the left portion.
@@ -89,7 +89,7 @@ export function Compare({ src, alt }: { src: string; alt: string }) {
           aria-hidden="true"
           className="absolute top-1/2 left-1/2 grid h-9 w-9 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-[var(--color-ink)] bg-white"
         >
-          <span className="flex gap-[3px]" aria-hidden="true">
+          <span className="flex gap-[3px]">
             <span className="h-3 w-px bg-[var(--color-ink)]" />
             <span className="h-3 w-px bg-[var(--color-ink)]" />
           </span>

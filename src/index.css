@@ -229,8 +229,11 @@ html.theme-transition [data-ui] * {
   .shutter.is-in,
   .shutter.is-in > .shutter-inner,
   .convert-in,
-  .marquee-track {
+  .marquee-track,
+  .proof-enter > * {
     animation: none;
+    opacity: 1;
+    transform: none;
   }
   /* Stream stays reachable without motion: a static, scrollable row. */
   .marquee {
@@ -244,6 +247,23 @@ html.theme-transition [data-ui] * {
       color, background-color, border-color, opacity, outline-color,
       fill, stroke !important;
   }
+}
+
+/* Hero entrance: one shot, type then the comparison. */
+.proof-enter > * {
+  animation: rise 480ms var(--ease-out) both;
+}
+.proof-enter > *:nth-child(1) {
+  animation-delay: 20ms;
+}
+.proof-enter > *:nth-child(2) {
+  animation-delay: 70ms;
+}
+.proof-enter > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+.proof-enter > *:nth-child(4) {
+  animation-delay: 180ms;
 }
 
 /* ---------- controls ---------- */
