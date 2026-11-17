@@ -110,7 +110,7 @@ export function Converter() {
   return (
     <section id="demo" aria-label="Try the converter" className="px-4 py-28 md:px-5 md:py-36">
       <div ref={sectionRef} className="reveal mx-auto max-w-[1100px]">
-        <h2 className="text-[clamp(24px,2.4vw,32px)] font-extrabold tracking-[-0.03em]">
+        <h2 className="text-[length:var(--step-title)] font-extrabold tracking-[-0.03em]">
           Try it on yours
         </h2>
         <p className="mt-2">
@@ -137,7 +137,7 @@ export function Converter() {
               {grid ? (
                 <div key={sourceTick} className="convert-in w-full">
                   <AsciiCanvas grid={grid} fontSize={10} ariaLabel={`ASCII rendering of ${sourceName}`} />
-                  <div className="mt-4 flex flex-wrap items-baseline justify-between gap-2 text-[13px] text-[var(--color-on-panel-muted)]">
+                  <div className="mt-4 flex flex-wrap items-baseline justify-between gap-2 text-[length:var(--step-small)] text-[var(--color-on-panel-muted)]">
                     <span>{sourceName}</span>
                     <span className="tabular-nums">
                       {grid.cols} × {grid.rows} characters
@@ -149,7 +149,9 @@ export function Converter() {
                   <p className="text-[var(--step-lead)] font-semibold text-[var(--color-on-panel)]">
                     {error ?? "Drop an image here"}
                   </p>
-                  <p className="mt-2 text-[15px] text-[var(--color-on-panel-muted)]">or paste from your clipboard</p>
+                  <p className="mt-2 text-[length:var(--step-small)] text-[var(--color-on-panel-muted)]">
+                    or paste from your clipboard
+                  </p>
                 </div>
               )}
               <Button
@@ -172,39 +174,33 @@ export function Converter() {
           {/* controls */}
           <div className="flex flex-col bg-[var(--color-panel)] p-5 text-[var(--color-on-panel)]">
             <ControlRow label="Resolution" value={`${controls.cols} cols`}>
-              <input
-                type="range"
+              <Range
                 min={24}
                 max={200}
                 step={4}
                 value={controls.cols}
-                onChange={(e) => set("cols", Number(e.target.value))}
-                className="w-full"
-                aria-label="Resolution in character columns"
+                onChange={(value) => set("cols", value)}
+                label="Resolution in character columns"
               />
             </ControlRow>
             <ControlRow label="Contrast" value={controls.contrast.toFixed(2)}>
-              <input
-                type="range"
+              <Range
                 min={0.5}
                 max={2}
                 step={0.05}
                 value={controls.contrast}
-                onChange={(e) => set("contrast", Number(e.target.value))}
-                className="w-full"
-                aria-label="Contrast"
+                onChange={(value) => set("contrast", value)}
+                label="Contrast"
               />
             </ControlRow>
             <ControlRow label="Brightness" value={controls.brightness.toFixed(2)}>
-              <input
-                type="range"
+              <Range
                 min={0.5}
                 max={2}
                 step={0.05}
                 value={controls.brightness}
-                onChange={(e) => set("brightness", Number(e.target.value))}
-                className="w-full"
-                aria-label="Brightness"
+                onChange={(value) => set("brightness", value)}
+                label="Brightness"
               />
             </ControlRow>
 
@@ -243,12 +239,12 @@ export function Converter() {
                 role="switch"
                 aria-checked={controls.invert}
                 onClick={() => set("invert", !controls.invert)}
-                className={`relative h-7 w-12 rounded-full transition-colors duration-150 ${
+                className={`switch relative h-7 w-12 rounded-full ${
                   controls.invert ? "bg-[var(--color-accent)]" : "bg-[var(--color-panel-2)]"
                 }`}
               >
                 <span
-                  className={`absolute top-1 h-5 w-5 rounded-full bg-white transition-transform duration-150 ${
+                  className={`switch-knob absolute top-1 h-5 w-5 rounded-full bg-white ${
                     controls.invert ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
@@ -278,7 +274,7 @@ export function Converter() {
           </div>
         </div>
 
-        <p className="mt-4 text-[15px] text-[var(--color-muted)]">
+        <p className="mt-4 text-[length:var(--step-small)] text-[var(--color-muted)]">
           Tip: the Resolution slider re-renders live. Watch the image dissolve into type.
         </p>
       </div>
@@ -296,12 +292,47 @@ function ControlRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-none py-3">
+    <div className="py-3">
       <div className="mb-2 flex items-baseline justify-between">
-        <span className="text-[14px] font-semibold">{label}</span>
-        {value && <span className="text-[13px] tabular-nums text-[var(--color-on-panel-muted)]">{value}</span>}
+        <span className="text-[length:var(--step-small)] font-semibold">{label}</span>
+        {value && (
+          <span className="text-[length:var(--step-small)] tabular-nums text-[var(--color-on-panel-muted)]">
+            {value}
+          </span>
+        )}
       </div>
       {children}
     </div>
+  );
+}
+
+function Range({
+  min,
+  max,
+  step,
+  value,
+  label,
+  onChange,
+}: {
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  label: string;
+  onChange: (value: number) => void;
+}) {
+  const fill = ((value - min) / (max - min)) * 100;
+  return (
+    <input
+      type="range"
+      className="range"
+      min={min}
+      max={max}
+      step={step}
+      value={value}
+      onChange={(e) => onChange(Number(e.target.value))}
+      aria-label={label}
+      style={{ "--fill": `${fill}%` } as React.CSSProperties}
+    />
   );
 }

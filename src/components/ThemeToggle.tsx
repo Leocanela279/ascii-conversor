@@ -6,7 +6,7 @@ export function ThemeToggle() {
   const [theme, toggle] = useTheme();
   return (
     <Button
-      variant="ghost"
+      variant="quiet"
       size="sm"
       icon={theme === "dark" ? Sun : Moon}
       onClick={toggle}

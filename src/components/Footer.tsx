@@ -1,13 +1,13 @@
 export function Footer() {
   return (
-    <footer className="px-6 pb-16 text-[13px] text-[var(--color-faint)] md:px-10">
+    <footer className="px-6 pb-16 text-[length:var(--step-small)] text-[var(--color-faint)] md:px-10">
       <p>
         © {new Date().getFullYear()}{" "}
         <a
           href="https://github.com/Leocanela279"
           target="_blank"
           rel="noreferrer"
-          className="font-semibold text-[var(--color-muted)] underline-offset-4 hover:underline"
+          className="link font-semibold text-[var(--color-muted)]"
         >
           Leandro Canela
         </a>{" "}
